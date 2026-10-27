@@ -1,0 +1,19 @@
+{
+    "id": "blog",
+    "name": "Блог",
+    "version": "0.1.0",
+    "core": "^0.5",
+    "entry": "plugin.php",
+    "description": "Записи блога с рубриками и тегами: список, страница записи, редактор в админке; мультиязычность через плагин i18n (если установлен).",
+    "license": "MIT",
+    "repository": "burzilov/motorchk-plugin-blog",
+    "admin": {
+        "menu": "Блог"
+    },
+    "public": {
+        "prefix": "blog"
+    },
+    "autoload": {
+        "Blog\\": "lib/Blog"
+    }
+}
