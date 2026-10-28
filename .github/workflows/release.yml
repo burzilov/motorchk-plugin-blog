@@ -13,7 +13,7 @@ env:
   # Ядро для тестов (tests/run.php требует core с vendor/). Поднимайте вместе с "core" в plugin.json.
   CORE_REF: v0.6.0
   # Плагин i18n для тестов мультиязычности.
-  I18N_REF: v0.1.7
+  I18N_REF: v0.1.8
 
 jobs:
   release:
@@ -50,7 +50,7 @@ jobs:
       - name: Verify tag matches plugin.json version
         working-directory: plugin
         run: |
-          VERSION=$(sed -n 's/^[[:space:]]*"version":[[:space:]]*"\([^"]*\)".*/\1/p' plugin.json | head -n1)
+          VERSION=$(sed -n '/^[[:space:]]*"version":[[:space:]]*"[^"]*"/{s/^[[:space:]]*"version":[[:space:]]*"\([^"]*\)".*/\1/p;q;}' plugin.json)
           if [ "${GITHUB_REF_NAME}" != "v${VERSION}" ]; then
             echo "Тег ${GITHUB_REF_NAME} не совпадает с version ${VERSION} в plugin.json"
             exit 1
