@@ -11,9 +11,9 @@ permissions:
 
 env:
   # Ядро для тестов (tests/run.php требует core с vendor/). Поднимайте вместе с "core" в plugin.json.
-  CORE_REF: v0.5.6
+  CORE_REF: v0.6.0
   # Плагин i18n для тестов мультиязычности.
-  I18N_REF: v0.1.4
+  I18N_REF: v0.1.6
 
 jobs:
   release:
