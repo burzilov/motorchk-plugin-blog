@@ -7,7 +7,7 @@
 **[Скачать](https://github.com/burzilov/motorchk-plugin-blog/releases/latest)** — последний ZIP из GitHub Releases
 (распаковать в `public_html/plugins/`).
 
-Текущая версия для разработки требует ядро `>=0.6.1`, PHP 8.4. Лицензия — [MIT](LICENSE).
+Версия 0.1.4, ядро `>=0.6.1`, PHP 8.4. Лицензия — [MIT](LICENSE).
 
 ## Установка
 
