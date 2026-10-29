@@ -42,6 +42,32 @@ return static function (PluginContext $plugin): void {
         }
     });
 
+    $plugin->filter('sitemap', static function (array $entries, array $context) use ($plugin, $text): array {
+        $locales = $context['locales'];
+        $default = $context['default_locale'];
+        $index = [];
+        foreach ($locales as $locale) {
+            $index[$locale] = rtrim($plugin->publicUrl('/', $locale), '/') . '/';
+        }
+        foreach ($index as $url) {
+            $entries[] = ['loc' => $url, 'alternates' => $index];
+        }
+
+        $repo = new Repository($plugin, $text());
+        foreach ($repo->posts(true) as $post) {
+            $alternates = [];
+            foreach ($locales as $locale) {
+                if ($locale === $default || ($post['title'][$locale] ?? '') !== '') {
+                    $alternates[$locale] = $plugin->publicUrl('/' . $post['slug'], $locale);
+                }
+            }
+            foreach ($alternates as $url) {
+                $entries[] = ['loc' => $url, 'lastmod' => $post['updated'], 'alternates' => $alternates];
+            }
+        }
+        return $entries;
+    });
+
     // ---------- сайт ----------
     $plugin->publicRoute('GET', '/', static fn(PluginRequest $r) => $site()->index($r));
     $plugin->publicRoute('GET', '/category/{slug}', static fn(PluginRequest $r) => $site()->category($r));

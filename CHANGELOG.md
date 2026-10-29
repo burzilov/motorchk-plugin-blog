@@ -1,5 +1,10 @@
 # Changelog
 
+## Не выпущено
+
+- Добавлены главная блога и опубликованные записи в sitemap ядра, включая переводы и hreflang.
+- Минимальная версия ядра повышена до 0.6.1.
+
 ## 0.1.3 — 2026-10-28
 
 - `release.sh` и workflow релиза: version из plugin.json и первая запись CHANGELOG читаются `sed …;q` без `| head -n1` — под `set -o pipefail` ранний выход head давал SIGPIPE (exit 141) на большом CHANGELOG. Код плагина не менялся.

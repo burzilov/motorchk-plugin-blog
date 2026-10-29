@@ -257,6 +257,9 @@ check($st === 200 && str_contains($body, '<h2>Подзаголовок</h2>') &&
 check(str_contains($body, 'datetime="2026-10-01"') && str_contains($body, '01.10.2026') && str_contains($body, 'href="/blog/category/news"') && str_contains($body, 'href="/blog/tag/php"') && str_contains($body, 'rel="tag"'), 'дата, рубрика, теги со ссылками');
 check(str_contains($body, 'name="description" content="Анонс &lt;b&gt;жирный&lt;/b&gt; вторая строка"') || str_contains($body, 'name="description" content="Анонс &lt;b&gt;жирный&lt;/b&gt;'), 'анонс — meta description');
 check($public('/blog/draft')[0] === 404 && $public('/blog/draft', [], true)[0] === 200, 'черновик: 404 для гостей, виден администратору');
+[$seoStatus, $seo] = $public('/sitemap.xml');
+check($seoStatus === 200 && str_contains($seo, '<loc>http://example.test/blog/</loc>') && str_contains($seo, '<loc>http://example.test/blog/privet-mir-script</loc>') && !str_contains($seo, '/blog/draft</loc>'), 'sitemap: блог и опубликованная запись, без черновика');
+check(str_contains($seo, '<lastmod>'), 'sitemap: дата изменения записи');
 [$st, $body] = $public('/blog/category/news');
 check($st === 200 && str_contains($body, 'Рубрика: Новости') && str_contains($body, 'privet-mir-script') && !str_contains($body, 'post-1"') && str_contains($body, 'Все записи'), 'страница рубрики');
 [$st, $body] = $public('/blog/tag/php');
@@ -324,6 +327,9 @@ if (!$hasI18n) {
     $call('POST', '/tags', ['name' => ['ru' => 'Советы'], 'slug' => 'tips']);
     [$st] = $call('POST', '/posts', ['title' => ['ru' => 'Привет', 'en' => 'Hello'], 'excerpt' => ['ru' => 'Анонс', 'en' => 'Teaser'], 'body' => ['ru' => 'Русский текст', 'en' => 'English text'], 'slug' => 'hello', 'date' => '2026-10-01', 'category' => 'news', 'tags' => ['tips'], 'published' => '1']);
     $call('POST', '/posts', ['title' => ['ru' => 'Только по-русски'], 'body' => ['ru' => 'Без перевода'], 'slug' => 'ru-only', 'date' => '2026-09-01', 'published' => '1']);
+    [$seoStatus, $seo] = $public('/sitemap.xml');
+    check($seoStatus === 200 && str_contains($seo, '<loc>http://example.test/blog/hello</loc>') && str_contains($seo, '<loc>http://example.test/en/blog/hello</loc>') && str_contains($seo, 'hreflang="x-default"'), 'sitemap: переведённая запись и hreflang');
+    check(str_contains($seo, '<loc>http://example.test/blog/ru-only</loc>') && !str_contains($seo, '<loc>http://example.test/en/blog/ru-only</loc>'), 'sitemap: запись без перевода не создаёт дубликат');
     check($st === 302 && $json('posts.json')['hello']['title'] === ['ru' => 'Привет', 'en' => 'Hello'], 'запись на двух языках');
     [$st, $body] = $public('/blog/');
     check($st === 200 && str_contains($body, 'Привет') && str_contains($body, 'Читать далее') && str_contains($body, 'href="/blog/hello"'), 'основной язык: /blog/');
@@ -343,6 +349,7 @@ if (!$hasI18n) {
     check(str_contains($public('/en/blog/')[1], 'Continue') && str_contains($public('/blog/')[1], 'Дальше'), 'строки переопределяются словарём i18n (blog.read_more)');
     [$st] = $call('POST', '/posts/hello', ['title' => ['ru' => 'Привет', 'en' => ''], 'body' => ['ru' => 'Русский текст', 'en' => ''], 'slug' => 'hello', 'date' => '2026-10-01', 'published' => '1']);
     check($st === 302 && !isset($json('posts.json')['hello']['title']['en']) && !isset($json('posts.json')['hello']['body']['en']), 'пустое поле перевода удаляет перевод');
+    check(!str_contains($public('/sitemap.xml')[1], '<loc>http://example.test/en/blog/hello</loc>'), 'sitemap: удалённый перевод исчезает');
     t_rm($config['site_path']);
 }
 
