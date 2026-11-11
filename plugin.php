@@ -4,7 +4,7 @@
  * Блог: записи с рубриками и тегами.
  *   сайт:    /blog/, /blog/{slug}, /blog/category/{slug}, /blog/tag/{slug}
  *   админка: /admin-panel/plugins/blog/ — записи, /categories — рубрики, /tags — теги
- * Языки берутся из плагина i18n (если установлен), без него — один язык сайта.
+ * Языки берутся из службы locale (плагин i18n, если установлен), без неё — один язык сайта.
  * Данные — plugin-data/blog/{posts,categories,tags}.json.
  */
 
@@ -14,9 +14,9 @@ use Blog\Site;
 use Blog\Text;
 
 return static function (PluginContext $plugin): void {
-    // Строки сайта можно переопределить в словаре i18n (ключи blog.*). Служба берётся лениво — в обработчике.
+    // Строки сайта можно переопределить в словаре плагина i18n (ключи blog.*). Служба locale берётся лениво — в обработчике.
     $text = static function () use ($plugin): Text {
-        $i18n = $plugin->service('i18n');
+        $i18n = $plugin->service(SiteLocale::SERVICE);
         $override = $i18n !== null && method_exists($i18n, 't')
             ? static fn(string $key, string $fallback, string $locale): ?string => $i18n->t($key, $fallback, $locale)
             : null;

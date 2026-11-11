@@ -189,7 +189,7 @@ check($json('posts.json') === [] && $json('categories.json') === [] && $json('ta
 out("\n[пустой блог]\n");
 [$st, $body] = $public('/blog/');
 check($st === 200 && str_contains($body, 'Записей пока нет.') && str_contains($body, '<h1 class="blog-title">Блог</h1>'), '/blog/ — пустой список в шаблоне темы');
-check(str_contains($body, '/plugin-assets/blog/blog.css') && str_contains($body, '</html>'), 'стили блога подключены, страница внутри темы');
+check(str_contains($body, '/plugins-assets/blog/blog.css') && str_contains($body, '</html>'), 'стили блога подключены, страница внутри темы');
 [$st, $body] = $public('/blog/nope');
 check($st === 404 && str_contains($body, 'Запись не найдена'), 'неизвестная запись — 404 в шаблоне темы');
 check($public('/blog/Bad_Slug')[0] === 404 && $public('/blog/category/nope')[0] === 404 && $public('/blog/tag/nope')[0] === 404, 'неверный адрес, нет рубрики/тега — 404');
