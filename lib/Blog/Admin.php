@@ -202,7 +202,7 @@ final class Admin
     private function localeNames(array $locales): array
     {
         $names = [];
-        $svc = $this->plugin->service('i18n');
+        $svc = $this->plugin->service(\SiteLocale::SERVICE);
         if ($svc !== null && method_exists($svc, 'names')) {
             $names = (array) $svc->names();
         }
